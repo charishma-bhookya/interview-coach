@@ -1,15 +1,10 @@
-import { GoogleGenAI } from "@google/genai";
+import { generateText } from "@/lib/llm";
 
-// Connect to Gemini using the key from .env.local
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-// This runs when someone visits /api/test
 export async function GET() {
-  const response = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents: "Ask me one behavioral interview question for a software engineer.",
-  });
+  const reply = await generateText(
+    "You are a friendly interviewer. Ask exactly one question. Plain text only. No markdown, no intro, no extra commentary.",
+    [{ role: "user", text: "Ask me one behavioral interview question for a software engineer." }]
+  );
 
-  // Send Gemini's reply back as JSON
-  return Response.json({ reply: response.text });
+  return Response.json({ reply });
 }
